@@ -43,33 +43,8 @@ public class Unit : MonoBehaviour {
 	}
 
 	//--------------------------------------
-	// Unity Methods
-	//--------------------------------------
-	#region Unity
-	void Awake(){
-		
-	}
-	
-	void Start(){
-		
-	}
-	
-	void FixedUpdate(){
-		move (GridGenerator.instance.Grid[GridGenerator.instance.Width-1, GridGenerator.instance.Height-1]);
-	}
-	#endregion
-
-	//--------------------------------------
 	// Private Methods
 	//--------------------------------------
-	/// <summary>
-	/// Move this enemy to the specified target.
-	/// </summary>
-	/// <param name="target">Target cell</param>
-	private void move(Cell target){
-		transform.position = Vector3.MoveTowards (transform.position, target.Go.transform.position, speed * Time.deltaTime);
-	}
-
 	private void die(){
 		if(onDeadUnit != null)
 			onDeadUnit(waveIndex);
