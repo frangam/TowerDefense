@@ -14,11 +14,11 @@ public class GridGenerator : MonoBehaviour {
 	[SerializeField]
 	private int 					height = 30; 		//number of cells for the world height
 	[SerializeField]
-	private GameObject 				normalCell; 		//basic cell prefab
+	private Cell 					normalCell; 		//basic cell prefab
 	[SerializeField]
-	private GameObject 				enemyCell; 			//enemy cell prefab
+	private Cell 					enemyCell; 			//enemy cell prefab
 	[SerializeField]
-	private GameObject 				crystalCell; 		//crystal cell prefab
+	private Cell 					crystalCell; 		//crystal cell prefab
 	[SerializeField]
 	private List<Vector2>			enemiesSpawnerCoords;	//coords of the enemy starting spawn cells
 	[SerializeField]
@@ -55,44 +55,21 @@ public class GridGenerator : MonoBehaviour {
 		}
 	}
 
-	public int CrystalCellsNum {
+	/// <summary>
+	/// Number of the initial crystals
+	/// </summary>
+	/// <value>The initial crystals number.</value>
+	public int InitialCrystalsNum {
 		get {
-			return this.crystalsCoords.Count;
-		}
-	}
+			int num = 0;
 
-	/// <summary>
-	/// Gets the enemies cells.
-	/// </summary>
-	/// <value>The enemies cells.</value>
-	public List<Cell> enemiesCells{
-		get{
-			List<Cell> cells = new List<Cell>();
-
-			foreach(Vector2 coord in enemiesSpawnerCoords){
-				cells.Add(grid[(int) coord.x, (int) coord.y]);
+			foreach(CrystalCell c in crystalsCells()){
+				num += c.CrystalQuantity;
 			}
 
-			return cells;
+			return num;
 		}
 	}
-
-	/// <summary>
-	/// Gets the crystals cells.
-	/// </summary>
-	/// <value>The crystals cells.</value>
-	public List<Cell> crystalsCells{
-		get{
-			List<Cell> cells = new List<Cell>();
-			
-			foreach(Vector2 coord in crystalsCoords){
-				cells.Add(grid[(int) coord.x, (int) coord.y]);
-			}
-			
-			return cells;
-		}
-	}
-
 
 	//--------------------------------------
 	// Unity Methods
@@ -102,12 +79,11 @@ public class GridGenerator : MonoBehaviour {
 		instance=this;
 
 		initChecks ();
-	}
-
-	void Start(){
 		createGrid (); //first, create the grid
 		centerGrid (); //then, center it to the screen view
 	}
+
+
 	#endregion
 	
 	//--------------------------------------
@@ -171,29 +147,29 @@ public class GridGenerator : MonoBehaviour {
 
 		for(int j=0; j<height; j++){
 			for(int i=0; i<width; i++){
-				GameObject cellAux = normalCell;
+				Cell cellAuxPb = normalCell; //prefab to instantiate
 				CellType cellType = CellType.NORMAL; //the cell type
 
 				//enemy cell
 				if(enemiesSpawnerCoords.Contains(new Vector2(i, j))){
 					cellType = CellType.ENEMY_SPAWNER;
-					cellAux = enemyCell;
+					cellAuxPb = enemyCell;
 				}
 				//crystal cell
 				else if(crystalsCoords.Contains(new Vector2(i, j))){
 					cellType = CellType.CRYSTAL;
-					cellAux = crystalCell;
+					cellAuxPb = crystalCell;
 				}
 
 
-				//instantiate cell gameobject into the scene
-				GameObject cellGO = Instantiate(cellAux) as GameObject;
+				//instantiate chosen cell prefab into the scene
+				Cell cellGO = Instantiate(cellAuxPb) as Cell;
 				cellGO.transform.parent = this.transform;
 				cellGO.transform.position = new Vector3(i*normalCell.transform.localScale.x, normalCell.transform.position.y, j*normalCell.transform.localScale.z);
 
 				//create the cell and add it to grid
-				Cell cell = new Cell(i, j, cellGO, cellType); 
-				grid[i, j] = cell;
+				cellGO.init(i, j, cellType); 
+				grid[i, j] = cellGO;
 			}
 		}
 	}
@@ -204,4 +180,43 @@ public class GridGenerator : MonoBehaviour {
 	private void centerGrid(){
 		transform.position = new Vector3 (-(width*normalCell.transform.localScale.x/2) + Camera.main.transform.position.x + 0.5f, 0, 0);
 	}
+
+	//--------------------------------------
+	// Public Methods
+	//--------------------------------------
+	/// <summary>
+	/// Gets the enemies cells.
+	/// </summary>
+	/// <value>The enemies cells.</value>
+	public List<Cell> enemiesCells(){
+		List<Cell> cells = new List<Cell>();
+		
+		foreach(Vector2 coord in enemiesSpawnerCoords){
+			cells.Add(grid[(int) coord.x, (int) coord.y]);
+		}
+		
+		return cells;
+	}
+
+	/// <summary>
+	/// Gets the living crystals cells.
+	/// </summary>
+	/// <value>The living crystals cells.</value>
+	public List<Cell> crystalsCells(){
+		List<Cell> cells = new List<Cell>();
+		
+		foreach(Cell cell in grid){
+			if(cell.Type == CellType.CRYSTAL){
+				CrystalCell cc = cell.GetComponent<CrystalCell>();
+
+				if(cc != null && !cc.HasCaught){
+					cells.Add(cell);
+				}
+			}
+		}
+		
+		return cells;
+	}
+
+
 }

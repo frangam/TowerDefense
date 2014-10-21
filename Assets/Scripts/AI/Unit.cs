@@ -57,7 +57,7 @@ public class Unit : MonoBehaviour {
 	//--------------------------------------
 	public void init(Cell cell, int _waveIndex){
 		waveIndex = _waveIndex;
-		Vector3 pos = new Vector3(cell.Go.transform.position.x, this.transform.position.y, cell.Go.transform.position.z); //position to locate the enemy
+		Vector3 pos = new Vector3(cell.transform.position.x, this.transform.position.y, cell.transform.position.z); //position to locate the enemy
 		Instantiate(this, pos, this.transform.rotation); //instantiate enemy to the scene in the correct position
 	}
 

@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour {
 	// Private Attributes
 	//--------------------------------------
 	private int 					crystals = 1;		//number of crystals the player have
+	private bool					finishGame = false;	//win or lose
 
 	//--------------------------------------
 	// Public Attributes
@@ -18,7 +19,23 @@ public class GameManager : MonoBehaviour {
 	#region Unity
 	void Awake(){
 		instance = this;
-		crystals = GridGenerator.instance.CrystalCellsNum;
+		finishGame = false;
+		crystals = GridGenerator.instance.InitialCrystalsNum;
+		Debug.Log ("Initial Crystals Number: " + crystals);
+	}
+
+	void Update(){
+		if(!finishGame && isGameOver()){
+			finishGame = true;
+			Debug.Log("Game Over");
+			pause();
+
+		}
+		else if(!finishGame && win()){
+			finishGame = true;
+			Debug.Log("Player Wins");
+			pause();
+		}
 	}
 	#endregion
 
@@ -37,5 +54,13 @@ public class GameManager : MonoBehaviour {
 
 	public bool win(){
 		return !isGameOver () && SpawnHandler.instance.Finished && SpawnHandler.instance.livingUnitsNum () <= 0;
+	}
+
+	public void pause(bool _pause = true){
+		Time.timeScale = _pause ? 0 : 1;
+	}
+
+	public void updateCrystalsNum(){
+		crystals--;
 	}
 }

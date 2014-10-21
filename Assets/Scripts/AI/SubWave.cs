@@ -8,19 +8,19 @@ public class SubWave {
 	// Setting Attributes
 	//--------------------------------------
 	[SerializeField]
-	private Unit 	unit;
+	private Unit 			unit;
 	[SerializeField]
-	private int 	quantity = 1;		//quantity of the same unit to spawn
+	private int 			quantity = 1;		//quantity of the same unit to spawn
 	[SerializeField]
-	private float 	rate = 2.3f; 		//spawn frecuency in seconds
+	private float 			rate = 2.3f; 		//spawn frecuency in seconds
 	[SerializeField]
-	private float 	initialDelay = 2f; 	//an initial delay to start to spawn units
+	private float 			initialDelay = 2f; 	//an initial delay to start to spawn units
 
 	//--------------------------------------
 	// Delegates & Events
 	//--------------------------------------
-	public delegate void finishSubWave(int waveIndex);
-	public static event finishSubWave onFinishSubWave;
+	public delegate void 	finishSubWave(int waveIndex);
+	public static event 	finishSubWave onFinishSubWave;
 
 	//--------------------------------------
 	// Public Methods
@@ -28,7 +28,7 @@ public class SubWave {
 	public IEnumerator spawn(int waveIndex){
 		yield return new WaitForSeconds(initialDelay); //initial delay
 
-		List<Cell> unitsCells = GridGenerator.instance.enemiesCells; //cells where units are spawned (default at enemies cells)
+		List<Cell> unitsCells = GridGenerator.instance.enemiesCells(); //cells where units are spawned (default at enemies cells)
 
 		for(int i=0; i<quantity; i++){
 			//only spawn if not game over

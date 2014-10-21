@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Cell {
+public class Cell: MonoBehaviour {
 	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
 	private int 		x; 						// x coord
 	private int 		y; 						// y coord
 	private CellType 	type = CellType.NORMAL; //cell type 
-	private GameObject	go;						//the gameobject represents this cell
 
 
 	//--------------------------------------
@@ -32,21 +31,16 @@ public class Cell {
 		}
 	}
 
-	public GameObject Go {
-		get {
-			return this.go;
-		}
+	//--------------------------------------
+	// Init Methods
+	//--------------------------------------
+	public virtual void init(int _x, int _y) {
+		init (_x, _y, CellType.NORMAL);
 	}
-
-	//--------------------------------------
-	// Constructors
-	//--------------------------------------
-	public Cell(int _x, int _y, GameObject _go) : this(_x, _y, _go, CellType.NORMAL){}
-	public Cell(int _x, int _y,  GameObject _go, CellType _type){
+	public virtual void init(int _x, int _y, CellType _type){
 		x = _x;
 		y = _y;
 		type = _type;
-		go = _go;
 	}
 
 }
