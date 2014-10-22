@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Enemy : Unit {
+public class Enemy : Unit, System.IComparable<Enemy> {
 	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
@@ -58,14 +58,30 @@ public class Enemy : Unit {
 	}
 
 	//--------------------------------------
+	// Icomparable implementation
+	//--------------------------------------
+	/// <summary>
+	/// Compares to which enemy is closer to catch its crystal.
+	/// 0: if both are the same distance to their crystals
+	/// >0: if this is further away to its crystal than other
+	/// <0: if this is closer to its crystal than other
+	/// </summary>
+	/// <returns>Which is closer to catch its crystal</returns>
+	/// <param name="other">Other enemy</param>
+	public int CompareTo (Enemy other){
+		return Vector3.Distance (transform.position, target.transform.position)
+			.CompareTo (Vector3.Distance (other.transform.position, other.target.transform.position));
+	}
+
+	//--------------------------------------
 	// Events
 	//--------------------------------------
 	void onCaughtCrystal (Cell crystalCell){
-		Debug.Log ("Retargeting crystal cell");
-
 		//retarget to a new living crystal cell
 		if(!GameManager.instance.isGameOver() && target == crystalCell){
 			chooseTarget();
 		}
 	}
+
+
 }

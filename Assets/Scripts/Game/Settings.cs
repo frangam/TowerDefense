@@ -10,6 +10,7 @@ public class Settings : MonoBehaviour{
 	//--------------------------------------
 	public const string CRYSTAL_CELL_TAG = "CrystallCell";
 	public const string ENEMY_TAG = "Enemy";
+	public const string BULLET_TAG = "Bullet";
 
 	//--------------------------------------
 	// Unity Methods

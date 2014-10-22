@@ -70,20 +70,20 @@ public class SpawnHandler : MonoBehaviour {
 		currentWaveIndex++;
 
 		if(currentWaveIndex < waves.Length){
-			Debug.Log("A new wave " + currentWaveIndex);
 			instance.StartCoroutine(instance.spawn());
-		}
-		else{
-			Debug.Log("Finished spawn");
 		}
 	}
 
 	void onFinishSubWave (int waveIndex){
-		instance.waves [waveIndex].checkIfFishish();
+		bool finishWave = instance.waves [waveIndex].checkIfFishish();
+
+		//continue spawningCurrentWave
+		if(!finishWave)
+			continueSpawningCurrentWave();
 	}
 
 	void onDeadUnit (int waveIndex){
-		Debug.Log ("Unit is dead " + waveIndex);
+		Debug.Log ("Unit is dead of wave" + waveIndex);
 //		updateLivingUnits ();
 	}
 	
@@ -96,10 +96,14 @@ public class SpawnHandler : MonoBehaviour {
 
 		//only spawn if not game over
 		if(!GameManager.instance.isGameOver()){
-			Wave wave = waves[currentWaveIndex];
-			wave.init(currentWaveIndex, faction);
-			StartCoroutine(wave.getNextSubWave().spawn(wave.Index));
+			continueSpawningCurrentWave();
 		}
+	}
+
+	private void continueSpawningCurrentWave(){
+		Wave wave = waves[currentWaveIndex];
+		wave.init(currentWaveIndex, faction);
+		StartCoroutine(wave.getNextSubWave().spawn(wave.Index));
 	}
 
 	private void updateLivingUnits(Unit deadUnit){

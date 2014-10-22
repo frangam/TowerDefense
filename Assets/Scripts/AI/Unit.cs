@@ -49,7 +49,7 @@ public class Unit : MonoBehaviour {
 		if(onDeadUnit != null)
 			onDeadUnit(waveIndex);
 
-		Destroy (this);
+		Destroy (gameObject);
 	}
 
 	//--------------------------------------
@@ -64,9 +64,9 @@ public class Unit : MonoBehaviour {
 	public void applyDamage(float damage){
 		life -= damage;
 
-		//dispatch event if this unit die
-		if(isDead() && onDeadUnit != null){
-
+		//TODO dispatch event if this unit die
+		if(isDead()){
+			die();
 		}
 	}
 

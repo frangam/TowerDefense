@@ -50,11 +50,16 @@ public class Wave {
 		faction = _faction;
 	}
 
-	public void checkIfFishish(){
+	public bool checkIfFishish(){
+		bool finish = false;
+
 		//dispatch event
 		if(currentSubWaveIndex >= subwaves.Length && onFinishWave != null){
+			finish = true;
 			onFinishWave(index);
 		}
+
+		return finish;
 	}
 
 	public SubWave getNextSubWave(){
