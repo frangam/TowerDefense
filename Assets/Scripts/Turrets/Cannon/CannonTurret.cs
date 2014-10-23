@@ -23,7 +23,7 @@ public class CannonTurret : Turret {
 	public override void shot ()
 	{
 		Bullet bullet = Instantiate (bulletPb, cannonPosition.position, bulletPb.transform.rotation) as Bullet;
-		bullet.init (this.Target, this.Damage);
+		bullet.init (this.Target, this.Damage, this.Range);
 	}
 
 

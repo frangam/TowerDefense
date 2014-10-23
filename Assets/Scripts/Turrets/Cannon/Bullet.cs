@@ -14,29 +14,35 @@ public class Bullet : MonoBehaviour {
 	// Private Attributes
 	//--------------------------------------
 	private float 	damage;
+	private float 	range;
 	private Unit 	target;
 	private Vector3 targetPosition;
+	private float	targetDistance;
 
 	//--------------------------------------
 	// Public Methods
 	//--------------------------------------
-	public void init(Unit _target, float _damage){
+	public void init(Unit _target, float _damage, float _range){
 		target = _target;
 		targetPosition = target.transform.position;
 		damage = _damage;
+		range = _range;
 	}
 
 	//--------------------------------------
 	// Unity Methods
 	//--------------------------------------
 	#region Unity
-	void Update(){
+	void FixedUpdate(){
 		if(target != null && followTarget)
 			transform.position = Vector3.MoveTowards (transform.position, target.transform.position, speed * Time.deltaTime);
 		else if(target != null && !followTarget)
 			 transform.position += (targetPosition - transform.position) * speed*Time.deltaTime; //Vector3.MoveTowards (transform.position, targetPosition, speed * Time.deltaTime);
 
+		targetDistance += Time.deltaTime * speed;
 
+		if(targetDistance >= range)
+			Destroy(this.gameObject);
 	}
 
 	void OnTriggerEnter(Collider collider){
