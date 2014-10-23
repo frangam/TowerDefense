@@ -9,6 +9,8 @@ public class Turret : MonoBehaviour {
 	[SerializeField]
 	private int 		damage = 1;
 	[SerializeField]
+	private float		price = 25;
+	[SerializeField]
 	private int 		range = 1; 		//unit: number of cells
 	[SerializeField]
 	private float 		shotRate = 0;	//shot rate in seconds (0 instantly)
@@ -21,8 +23,9 @@ public class Turret : MonoBehaviour {
 	// Private Attributes
 	//--------------------------------------
 	private Enemy 		target; 		//enemy to shot
-	public List<Enemy> targetsPool;	//pool of enemies
+	public List<Enemy> 	targetsPool;	//pool of enemies
 	private bool		anyEnemyInRange = false;
+	private TurretType 	type = TurretType.CANNON;
 
 	//--------------------------------------
 	// Getters & Setters
@@ -44,6 +47,21 @@ public class Turret : MonoBehaviour {
 		}
 	}
 
+	public TurretType Type {
+		get {
+			return this.type;
+		}
+	}
+
+	public float Price {
+		get {
+			return this.price;
+		}
+		set {
+			price = value;
+		}
+	}
+
 	//--------------------------------------
 	// Unity Methods
 	//--------------------------------------
@@ -51,11 +69,12 @@ public class Turret : MonoBehaviour {
 	void Awake(){
 		targetsPool = new List<Enemy> ();
 		anyEnemyInRange = false;
+		type = TurretType.CANNON;
 	}
 
 	void Update(){
 		//change target when current target has died
-		if(!anyEnemyInRange && target != null && target.isDead()){
+		if((target != null && target.isDead()) || target == null){
 			selectTargetFromPoolAndShot();
 		}
 

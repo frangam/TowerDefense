@@ -10,29 +10,35 @@ public class GridGenerator : MonoBehaviour {
 	// Setting Attributes
 	//--------------------------------------
 	[SerializeField]
-	private int 					width = 30; 		//number of cells for the world with
+	private int 					width = 30; 			//number of cells for the world with
 	[SerializeField]
-	private int 					height = 30; 		//number of cells for the world height
+	private int 					height = 30; 			//number of cells for the world height
 	[SerializeField]
-	private Cell 					normalCell; 		//basic cell prefab
+	private Cell 					normalCell; 			//basic cell prefab
 	[SerializeField]
-	private Cell 					enemyCell; 			//enemy cell prefab
+	private Cell 					enemyCell; 				//enemy cell prefab
 	[SerializeField]
-	private Cell 					crystalCell; 		//crystal cell prefab
+	private Cell 					crystalCell; 			//crystal cell prefab
 	[SerializeField]
 	private List<Vector2>			enemiesSpawnerCoords;	//coords of the enemy starting spawn cells
 	[SerializeField]
-	private List<Vector2>			crystalsCoords;		//coords of the crystal cells
+	private List<Vector2>			crystalsCoords;			//coords of the crystal cells
 
 	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
-	private Cell[,] 				grid;				//all cells of the grid sorted from bottom left to top right, row by row
+	private Node[,] 				grid;					//all cells of the grid sorted from bottom left to top right, row by row				
 
 	//--------------------------------------
 	// Public Attributes
 	//--------------------------------------
-	public static GridGenerator		instance; 			//singleton
+	public static GridGenerator		instance; 				//singleton
+
+	//--------------------------------------
+	// Delegates & Events
+	//--------------------------------------
+	public delegate void 	startedNeighborsNodes();
+	public static event 	startedNeighborsNodes onStartedNeighborsNodes;
 
 	//--------------------------------------
 	// Getters & Setters
@@ -49,7 +55,7 @@ public class GridGenerator : MonoBehaviour {
 		}
 	}
 
-	public Cell[,] Grid {
+	public Node[,] Grid {
 		get {
 			return this.grid;
 		}
@@ -168,7 +174,7 @@ public class GridGenerator : MonoBehaviour {
 				cellGO.transform.position = new Vector3(i*normalCell.transform.localScale.x, normalCell.transform.position.y, j*normalCell.transform.localScale.z);
 
 				//create the cell and add it to grid
-				cellGO.init(i, j, cellType); 
+				cellGO.init(i, j); 
 				grid[i, j] = cellGO;
 			}
 		}
@@ -192,7 +198,10 @@ public class GridGenerator : MonoBehaviour {
 		List<Cell> cells = new List<Cell>();
 		
 		foreach(Vector2 coord in enemiesSpawnerCoords){
-			cells.Add(grid[(int) coord.x, (int) coord.y]);
+			Cell cell = grid[(int) coord.x, (int) coord.y].GetComponent<Cell>();
+
+			if(cell != null)
+				cells.Add(cell);
 		}
 		
 		return cells;
@@ -216,6 +225,19 @@ public class GridGenerator : MonoBehaviour {
 		}
 		
 		return cells;
+	}
+
+	/// <summary>
+	/// inits neighbors nodes
+	/// </summary>
+	public void initNeigborsNodes(){
+		foreach(Node node in grid){
+			node.Neighbors = PathFinding.walkableNeighbors(grid, node);
+		}
+
+		if(onStartedNeighborsNodes != null){
+			onStartedNeighborsNodes();
+		}
 	}
 
 

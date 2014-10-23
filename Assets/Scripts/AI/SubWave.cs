@@ -8,7 +8,7 @@ public class SubWave {
 	// Setting Attributes
 	//--------------------------------------
 	[SerializeField]
-	private Unit 			unit;
+	private Unit 			unitPb;
 	[SerializeField]
 	private int 			quantity = 1;		//quantity of the same unit to spawn
 	[SerializeField]
@@ -39,10 +39,11 @@ public class SubWave {
 			int cellIndex = Random.Range(0, unitsCells.Count); 
 			Cell cell = unitsCells[cellIndex]; //get chosen cell
 			
-			
-			unit.init(cell, waveIndex);
-			//		livingUnits.Add(unit);
-			
+
+			//instantiate unit
+			Vector3 pos = new Vector3(cell.transform.position.x, unitPb.transform.position.y, cell.transform.position.z); //position to locate the enemy
+			Unit unit = MonoBehaviour.Instantiate(unitPb, pos, unitPb.transform.rotation) as Unit;
+			unit.init(cell, waveIndex); //init the unit			
 			
 			
 			yield return new WaitForSeconds(rate); //wait

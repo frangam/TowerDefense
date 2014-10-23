@@ -91,6 +91,9 @@ public class SpawnHandler : MonoBehaviour {
 	// Private Methods
 	//--------------------------------------
 	private IEnumerator spawn(){
+		while(!GameManager.instance.StartedGame)
+			yield return null;
+
 		yield return new WaitForSeconds(initialDelay); //initial delay
 
 

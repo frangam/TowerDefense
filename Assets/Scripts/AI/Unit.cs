@@ -6,15 +6,21 @@ public class Unit : MonoBehaviour {
 	// Setting Attributes
 	//--------------------------------------
 	[SerializeField]
-	private float 		life = 100;
+	private float 			initialLife = 100;
 	[SerializeField]
-	private float 		speed = 2.5f;
+	private float 			speed = 2.5f;
+	[SerializeField]
+	private float 			turnSpeed = 20f;
+	[SerializeField]
+	private UIProgressBar 	lifeBar; //life progress bar
 
 	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
-	private int 	waveIndex;
-
+	private int 			waveIndex;
+	private float			life;
+	private Cell 			originSpawnedCell;
+		
 	//--------------------------------------
 	// Delegates & Events
 	//--------------------------------------
@@ -30,9 +36,21 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
+	public float InitialLife {
+		get {
+			return this.initialLife;
+		}
+	}
+
 	public float Speed {
 		get {
 			return this.speed;
+		}
+	}
+
+	public float TurnSpeed {
+		get {
+			return this.turnSpeed;
 		}
 	}
 
@@ -42,6 +60,25 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
+	public Cell OriginSpawnedCell {
+		get {
+			return this.originSpawnedCell;
+		}
+	}
+	//--------------------------------------
+	// Unity Methods
+	//--------------------------------------
+	#region Unity
+	void Start(){
+		life = initialLife;
+		lifeBar.init (initialLife, this.gameObject);
+	}
+
+	void Update(){
+		lifeBar.Value = life;
+	}
+
+	#endregion
 	//--------------------------------------
 	// Private Methods
 	//--------------------------------------
@@ -55,11 +92,11 @@ public class Unit : MonoBehaviour {
 	//--------------------------------------
 	// Public Methods
 	//--------------------------------------
-	public void init(Cell cell, int _waveIndex){
+	public virtual void init(Cell cell, int _waveIndex){
+		originSpawnedCell = cell;
 		waveIndex = _waveIndex;
-		Vector3 pos = new Vector3(cell.transform.position.x, this.transform.position.y, cell.transform.position.z); //position to locate the enemy
-		Instantiate(this, pos, this.transform.rotation); //instantiate enemy to the scene in the correct position
 	}
+
 
 	public void applyDamage(float damage){
 		life -= damage;
@@ -72,5 +109,24 @@ public class Unit : MonoBehaviour {
 
 	public bool isDead(){
 		return life <= 0;
+	}
+
+	public virtual bool MoveToPoint(Vector3 point){
+		return false;
+		
+		float dist=Vector3.Distance(point, transform.position);
+		
+		//if the unit have reached the point specified
+		if(dist<0.15f) return true;
+		
+		//rotate towards destination
+		Quaternion wantedRot=Quaternion.LookRotation(point-transform.position);
+		transform.rotation=Quaternion.Slerp(transform.rotation, wantedRot, turnSpeed*Time.deltaTime);
+		
+		//move, with speed take distance into accrount so the unit wont over shoot
+		Vector3 dir=(point-transform.position).normalized;
+		transform.Translate(dir*Mathf.Min(dist, speed * Time.deltaTime), Space.World);
+		
+		return false;
 	}
 }

@@ -1,5 +1,6 @@
 public enum TurretType
 {
-	CANNON 		= 0,
-	LASER		= 1
+	NONE		= 0,
+	CANNON 		= 1,
+	LASER		= 2
 }

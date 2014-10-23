@@ -3,10 +3,35 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 	//--------------------------------------
+	// Setting Attributes
+	//--------------------------------------
+	[SerializeField]
+	private float gold = 300;
+
+	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
 	private int 					crystals = 1;		//number of crystals the player have
 	private bool					finishGame = false;	//win or lose
+	private bool					startedGame = false;
+
+	//--------------------------------------
+	// Getters & Setters
+	//--------------------------------------
+	public bool StartedGame {
+		get {
+			return this.startedGame;
+		}
+	}
+
+	public float Gold {
+		get {
+			return this.gold;
+		}
+		set {
+			gold = value;
+		}
+	}
 
 	//--------------------------------------
 	// Public Attributes
@@ -19,19 +44,29 @@ public class GameManager : MonoBehaviour {
 	#region Unity
 	void Awake(){
 		instance = this;
+		Time.timeScale = 1;
+		startedGame = false;
 		finishGame = false;
 		crystals = GridGenerator.instance.InitialCrystalsNum;
 		Debug.Log ("Initial Crystals Number: " + crystals);
 	}
 
+	void OnEnable(){
+		GridGenerator.onStartedNeighborsNodes += onStartedNeighborsNodes;
+	}
+
+	void OnDisable(){
+		GridGenerator.onStartedNeighborsNodes -= onStartedNeighborsNodes;
+	}
+
 	void Update(){
-		if(!finishGame && isGameOver()){
+		if(startedGame && !finishGame && isGameOver()){
 			finishGame = true;
 			Debug.Log("Game Over");
 			pause();
 
 		}
-		else if(!finishGame && win()){
+		else if(startedGame && !finishGame && win()){
 			finishGame = true;
 			Debug.Log("Player Wins");
 			pause();
@@ -43,6 +78,10 @@ public class GameManager : MonoBehaviour {
 	//--------------------------------------
 	// Public Methods
 	//--------------------------------------
+	public void startGame(){
+		GridGenerator.instance.initNeigborsNodes(); //init neigbors nodes
+	}
+
 	/// <summary>
 	/// Checks if it is game over or not
 	/// </summary>
@@ -62,5 +101,12 @@ public class GameManager : MonoBehaviour {
 
 	public void updateCrystalsNum(){
 		crystals--;
+	}
+
+	//--------------------------------------
+	// Events
+	//--------------------------------------
+	void onStartedNeighborsNodes (){
+		startedGame = true; //now it is ready to start the game
 	}
 }

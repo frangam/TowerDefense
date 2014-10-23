@@ -15,7 +15,7 @@ public class CrystalCell : Cell {
 	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
-	private int 			crystalQuantity = 1;	//number of available crystals in this cell
+	public int 			crystalQuantity = 1;	//number of available crystals in this cell
 	private bool 			hasCaught = false;
 
 	//--------------------------------------
@@ -35,32 +35,29 @@ public class CrystalCell : Cell {
 	//--------------------------------------
 	// Delegates & Events
 	//--------------------------------------
-	public delegate void caughtCrystal(Cell crystalCell);
+	public delegate void caughtCrystal(Cell crystalCell, Enemy enemy);
 	public static event caughtCrystal onCaughtCrystal;
 
 	//--------------------------------------
 	// Redefined Methods
 	//--------------------------------------
-	public override void init (int _x, int _y)
-	{
-		crystalQuantity = Random.Range (minCrystalQuantity, maxCrystalQuantity); //choose crystal quantity
-		base.init (_x, _y, CellType.CRYSTAL);
+	public override void init (int _x, int _y, bool _walkable, System.Collections.Generic.List<Node> _neighbors, Node _parent){
+		base.init (_x, _y, _walkable, _neighbors, _parent);
+		base.Type = CellType.CRYSTAL;
 
+		//choose crystal quantity
+		crystalQuantity = Random.Range (minCrystalQuantity, maxCrystalQuantity); 
 
 		//instantiate crystal prefabs
 		int maxInst = Mathf.Clamp (crystalQuantity, 1, 3);
 		for(int i=0; i<maxInst ; i++){
 			int indexPb = Random.Range(0, crystalsPbs.Length);
 			GameObject cp = crystalsPbs[indexPb]; //get crystal prefab
-			Vector3 pos = new Vector3(transform.position.x, cp.transform.position.y, transform.position.z);
-			GameObject go = Instantiate(cp, pos, cp.transform.rotation) as GameObject;
+			GameObject go = Instantiate(cp, transform.position, cp.transform.rotation) as GameObject;
 			go.transform.parent = this.transform;
 		}
 	}
-	public override void init (int _x, int _y, CellType _type)
-	{
-		init (_x, _y);
-	}
+
 
 	//--------------------------------------
 	// Unity Methods
@@ -69,25 +66,13 @@ public class CrystalCell : Cell {
 	void Awake(){
 		hasCaught = false;
 	}
-	
-	void OnCollisionEnter(Collision collision){
-		if(!hasCaught && collision.gameObject.tag == Settings.ENEMY_TAG){
-			Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-
-			//the enemy catchs the crystal
-			if(enemy != null){
-				enemy.catchCrystal();
-				catchCrystal();
-			}
-		}
-	}
 	#endregion
 
 
 	//--------------------------------------
-	// Private Methods
+	// Public Methods
 	//--------------------------------------
-	private void catchCrystal(){
+	public void catchCrystal(Enemy enemy){
 		crystalQuantity--; //update quantity
 		GameManager.instance.updateCrystalsNum (); //tell Game Manager update number of crystals
 
@@ -95,10 +80,9 @@ public class CrystalCell : Cell {
 		if(crystalQuantity <= 0){
 			Debug.Log("All crystals have been caught");
 			hasCaught = true;
-			resetCellToNormalCell();
 
 			if(onCaughtCrystal != null)
-				onCaughtCrystal(this);
+				onCaughtCrystal(this, enemy);
 		}
 
 		//destroy 1 child (crystal gameobject)
@@ -110,7 +94,5 @@ public class CrystalCell : Cell {
 		}
 	}
 
-	private void resetCellToNormalCell(){
 
-	}
 }
