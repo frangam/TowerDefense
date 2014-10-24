@@ -86,7 +86,7 @@ public class CrystalCell : Cell {
 		}
 
 		//destroy 1 child (crystal gameobject)
-		if(crystalQuantity <= transform.childCount){
+		if(crystalQuantity < transform.childCount){
 			foreach(Transform child in transform){
 				Destroy(child.gameObject);
 				break;

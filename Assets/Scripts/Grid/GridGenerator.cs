@@ -14,11 +14,7 @@ public class GridGenerator : MonoBehaviour {
 	[SerializeField]
 	private int 					height = 30; 			//number of cells for the world height
 	[SerializeField]
-	private Cell 					normalCell; 			//basic cell prefab
-	[SerializeField]
-	private Cell 					enemyCell; 				//enemy cell prefab
-	[SerializeField]
-	private Cell 					crystalCell; 			//crystal cell prefab
+	private Cell[] 					cellsPbs; 				//all cell types
 	[SerializeField]
 	private List<Vector2>			enemiesSpawnerCoords;	//coords of the enemy starting spawn cells
 	[SerializeField]
@@ -33,12 +29,6 @@ public class GridGenerator : MonoBehaviour {
 	// Public Attributes
 	//--------------------------------------
 	public static GridGenerator		instance; 				//singleton
-
-	//--------------------------------------
-	// Delegates & Events
-	//--------------------------------------
-	public delegate void 	startedNeighborsNodes();
-	public static event 	startedNeighborsNodes onStartedNeighborsNodes;
 
 	//--------------------------------------
 	// Getters & Setters
@@ -84,9 +74,11 @@ public class GridGenerator : MonoBehaviour {
 	void Awake(){
 		instance=this;
 
-		initChecks ();
+		initChecks (); //checks
 		createGrid (); //first, create the grid
 		centerGrid (); //then, center it to the screen view
+		initNeighborsNodes (); //init neighbors cells
+		completeBoundCells (); //create more bound cells at neighbors of crystal and enemy cells
 	}
 
 
@@ -153,25 +145,34 @@ public class GridGenerator : MonoBehaviour {
 
 		for(int j=0; j<height; j++){
 			for(int i=0; i<width; i++){
-				Cell cellAuxPb = normalCell; //prefab to instantiate
+				Cell cellAuxPb = null;
 				CellType cellType = CellType.NORMAL; //the cell type
 
 				//enemy cell
 				if(enemiesSpawnerCoords.Contains(new Vector2(i, j))){
 					cellType = CellType.ENEMY_SPAWNER;
-					cellAuxPb = enemyCell;
 				}
 				//crystal cell
 				else if(crystalsCoords.Contains(new Vector2(i, j))){
 					cellType = CellType.CRYSTAL;
-					cellAuxPb = crystalCell;
+
+				}
+				//bound cell
+				else if(PathFinding.isBound(i, j, width, height)){
+					cellType = CellType.BOUND;
+				}
+				//normal cell prefab to instantiate
+				else{
+					cellType = CellType.NORMAL;
 				}
 
+				//get the correct cell prefab
+				cellAuxPb = getCellPb(cellType);
 
 				//instantiate chosen cell prefab into the scene
 				Cell cellGO = Instantiate(cellAuxPb) as Cell;
 				cellGO.transform.parent = this.transform;
-				cellGO.transform.position = new Vector3(i*normalCell.transform.localScale.x, normalCell.transform.position.y, j*normalCell.transform.localScale.z);
+				cellGO.transform.position = new Vector3(i*cellAuxPb.transform.localScale.x, cellAuxPb.transform.position.y, j*cellAuxPb.transform.localScale.z);
 
 				//create the cell and add it to grid
 				cellGO.init(i, j); 
@@ -181,10 +182,28 @@ public class GridGenerator : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Gets the cell pb swith the correct type
+	/// </summary>
+	/// <returns>The cell pb.</returns>
+	/// <param name="type">Type.</param>
+	private Cell getCellPb(CellType type){
+		Cell cell = null;
+
+		foreach(Cell c in cellsPbs){
+			if(c.Type == type){
+				cell = c;
+				break;
+			}
+		}
+
+		return cell;
+	}
+
+	/// <summary>
 	/// Centers the grid on the screen
 	/// </summary>
 	private void centerGrid(){
-		transform.position = new Vector3 (-(width*normalCell.transform.localScale.x/2) + Camera.main.transform.position.x + 0.5f, 0, 0);
+		transform.position = new Vector3 (-(width*getCellPb(CellType.NORMAL).transform.localScale.x/2) + Camera.main.transform.position.x + 0.5f, 0, 0);
 	}
 
 	//--------------------------------------
@@ -230,15 +249,30 @@ public class GridGenerator : MonoBehaviour {
 	/// <summary>
 	/// inits neighbors nodes
 	/// </summary>
-	public void initNeigborsNodes(){
+	public void initNeighborsNodes(){
+		//load neighbors
 		foreach(Node node in grid){
-			node.Neighbors = PathFinding.walkableNeighbors(grid, node);
-		}
-
-		if(onStartedNeighborsNodes != null){
-			onStartedNeighborsNodes();
+			node.Neighbors = PathFinding.walkableNeighbors(grid, node, width, height);
 		}
 	}
-
-
+	/// <summary>
+	/// load bound cells at neighbors of crystal and enemy cells
+	/// </summary>
+	private void completeBoundCells(){
+		foreach(Node nod in grid){
+			Cell currentCell = nod.GetComponent<Cell>();
+			
+			if(currentCell != null && (currentCell.Type == CellType.CRYSTAL || currentCell.Type == CellType.ENEMY_SPAWNER)){
+				foreach(Node neighbor in nod.Neighbors){
+					Cell cell = neighbor.GetComponent<Cell>();
+					
+					if(cell != null && cell.Type == CellType.NORMAL){
+						Cell boundCellPb = getCellPb(CellType.BOUND); //get the bound cell prefab
+						cell.Type = CellType.BOUND; //change type to bound
+						Materials.changeSharedMaterial(cell.renderer, boundCellPb.renderer.sharedMaterials); //change the material
+					}
+				}
+			}
+		}
+	}
 }

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class GameManager : MonoBehaviour {
@@ -48,15 +48,6 @@ public class GameManager : MonoBehaviour {
 		startedGame = false;
 		finishGame = false;
 		crystals = GridGenerator.instance.InitialCrystalsNum;
-		Debug.Log ("Initial Crystals Number: " + crystals);
-	}
-
-	void OnEnable(){
-		GridGenerator.onStartedNeighborsNodes += onStartedNeighborsNodes;
-	}
-
-	void OnDisable(){
-		GridGenerator.onStartedNeighborsNodes -= onStartedNeighborsNodes;
 	}
 
 	void Update(){
@@ -79,7 +70,7 @@ public class GameManager : MonoBehaviour {
 	// Public Methods
 	//--------------------------------------
 	public void startGame(){
-		GridGenerator.instance.initNeigborsNodes(); //init neigbors nodes
+		startedGame = true;
 	}
 
 	/// <summary>
@@ -103,10 +94,5 @@ public class GameManager : MonoBehaviour {
 		crystals--;
 	}
 
-	//--------------------------------------
-	// Events
-	//--------------------------------------
-	void onStartedNeighborsNodes (){
-		startedGame = true; //now it is ready to start the game
-	}
+
 }

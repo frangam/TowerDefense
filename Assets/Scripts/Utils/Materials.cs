@@ -8,4 +8,9 @@ public class Materials {
 		_renderer.materials = materials;
 	}
 
+	public static void changeSharedMaterial(Renderer _renderer, Material[] _materials){
+		Material[] materials = _renderer.sharedMaterials;
+		materials = _materials;
+		_renderer.materials = materials;
+	}
 }

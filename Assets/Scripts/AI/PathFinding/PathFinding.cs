@@ -68,15 +68,15 @@ public class PathFinding {
 	}
 	
 
-	public static List<Node> walkableNeighbors(Node[,] grid, Node node){
+	public static List<Node> walkableNeighbors(Node[,] grid, Node node, int width, int height){
 		List<Node> adjacents = new List<Node>();
 		
 		//horizontal
 		for (int i = node.Y - 1; i <= node.Y + 1; i++) {
-			if (i > -1 && i < GridGenerator.instance.Width) {
+			if (i > -1 && i < width) {
 				Node adj = grid[node.X, i];
 
-				if (adj.Walkable) {
+				if (adj.Walkable && !adjacents.Contains(adj)) {
 					adjacents.Add(adj);
 				}
 			}
@@ -84,10 +84,10 @@ public class PathFinding {
 
 		//vertical
 		for (int j = node.X - 1; j <= node.X + 1; j++) {
-			if (j > -1 && j < GridGenerator.instance.Height){
+			if (j > -1 && j < height){
 				Node adj = grid[j, node.Y];
 
-				if (adj.Walkable) {
+				if (adj.Walkable && !adjacents.Contains(adj)) {
 					adjacents.Add(adj);
 				}
 			}
@@ -100,10 +100,10 @@ public class PathFinding {
 		x1--;
 		y1--;
 		for (int i = x1; i < x1 + 3; i++) {
-			if (i > -1 && i < GridGenerator.instance.Width && y1 > -1 && y1 < GridGenerator.instance.Height){
+			if (i > -1 && i < width && y1 > -1 && y1 < height){
 				Node adj = grid[i, y1];
 				
-				if (adj.Walkable) {
+				if (adj.Walkable && !adjacents.Contains(adj)) {
 					adjacents.Add(adj);
 				}
 			}
@@ -117,10 +117,10 @@ public class PathFinding {
 		x1--;
 		y1++;
 		for (int i = x1; i < x1 + 3; i++) {
-			if (i > -1 && i < GridGenerator.instance.Width && y1 > -1 && y1 < GridGenerator.instance.Height){
+			if (i > -1 && i < width && y1 > -1 && y1 < height){
 				Node adj = grid[i, y1];
 				
-				if (adj.Walkable) {
+				if (adj.Walkable && !adjacents.Contains(adj)) {
 					adjacents.Add(adj);
 				}
 			}
@@ -129,4 +129,36 @@ public class PathFinding {
 
 		return adjacents;
 	}
+
+
+	public static bool isBound(Node node, int width, int height){
+		return isBound (node.X, node.Y, width, height);
+	}
+
+	public static bool isBound(int x, int y, int width, int height){
+		bool bound = false;
+		
+		//horizontal
+		for (int i = y - 1; i <= y + 1; i++) {
+			bound = i <= -1 || i >= width;
+			
+			if (bound)
+				break;
+		}
+
+		if(!bound){
+			//vertical
+			for (int j = x - 1; j <= x + 1; j++) {
+				bound = j <= -1 || j >= height;
+				
+				if (bound)
+					break;
+			}
+		}
+		
+		return bound;
+	}
+
+
+
 }

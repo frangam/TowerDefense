@@ -70,11 +70,11 @@ public class InputHandler : MonoBehaviour {
 
 
 		//put turret
-		if(Input.GetMouseButtonUp(0) && hoverCell != null && hoverCell.isFree()){
+		if(Input.GetMouseButtonUp(0) && hoverCell != null && UIHandler.instance.turretToPut != null && hoverCell.isFree()){
 			putTurret();
 		}
 		//clear cell
-		if(Input.GetMouseButtonUp(1) && hoverCell != null && !hoverCell.isFree()){
+		if(Input.GetMouseButtonUp(1) && hoverCell != null && UIHandler.instance.turretToPut != null && !hoverCell.isFree()){
 			clearCell();
 		}
 	}

@@ -9,7 +9,8 @@ public class Settings : MonoBehaviour{
 	// Constants
 	//--------------------------------------
 	public const string CELL_TAG = "Cell";
-	public const string CRYSTAL_CELL_TAG = "CrystallCell";
+	public const string BOUND_CELL_TAG = "BoundCell";
+	public const string CRYSTAL_CELL_TAG = "CrystalCell";
 	public const string ENEMY_TAG = "Enemy";
 	public const string BULLET_TAG = "Bullet";
 

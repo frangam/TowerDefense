@@ -3,9 +3,14 @@ using System.Collections;
 
 public class Cell: Node {
 	//--------------------------------------
+	// Setting Attributes
+	//--------------------------------------
+	[SerializeField]
+	private CellType 	type = CellType.NORMAL; //cell type 
+
+	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
-	private CellType 	type = CellType.NORMAL; //cell type 
 	private Turret		turret = null;			//if has a turret
 
 	//--------------------------------------
@@ -17,6 +22,26 @@ public class Cell: Node {
 		}
 		set {
 			type = value;
+
+			if(tag != null){
+				switch(type){
+				case CellType.BOUND:
+					tag = Settings.BOUND_CELL_TAG;
+					break;
+
+				case CellType.NORMAL:
+					tag = Settings.CELL_TAG;
+					break;
+
+				case CellType.CRYSTAL:
+					tag = Settings.CRYSTAL_CELL_TAG;
+					break;
+
+				case CellType.ENEMY_SPAWNER:
+					tag = Settings.ENEMY_TAG;
+					break;
+				}
+			}
 		}
 	}
 	
@@ -25,7 +50,7 @@ public class Cell: Node {
 	// Public Methods
 	//--------------------------------------
 	public void putTurret(Turret _turret){
-		if(isFree() && _turret.Price <= GameManager.instance.Gold){ //if enough money
+		if(type == CellType.NORMAL && isFree() && _turret.Price <= GameManager.instance.Gold){ //if enough money and it is a valid cell
 			GameManager.instance.Gold -= _turret.Price; //buy turret
 
 			Vector3 pos = new Vector3 (transform.position.x, _turret.transform.position.y, transform.position.z); 
@@ -52,7 +77,6 @@ public class Cell: Node {
 	public override void init (int _x, int _y, bool _walkable, System.Collections.Generic.List<Node> _neighbors, Node _parent)
 	{
 		base.init (_x, _y, _walkable, _neighbors, _parent);
-		type = CellType.NORMAL;
 	}
 
 
