@@ -33,6 +33,12 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	public int Crystals {
+		get {
+			return this.crystals;
+		}
+	}
+
 	//--------------------------------------
 	// Public Attributes
 	//--------------------------------------
@@ -62,13 +68,11 @@ public class GameManager : MonoBehaviour {
 	void Update(){
 		if(startedGame && !finishGame && isGameOver()){
 			finishGame = true;
-			Debug.Log("Game Over");
 			pause();
 
 		}
 		else if(startedGame && !finishGame && win()){
 			finishGame = true;
-			Debug.Log("Player Wins");
 			pause();
 		}
 	}

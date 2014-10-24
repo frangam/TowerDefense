@@ -68,10 +68,6 @@ public class Cell: Node {
 //			turret.transform.parent = this.transform;
 
 			Walkable = false;//it is now unwalkable
-//			updateThisNodeOnMyWalkableNeighbors(false); //it is now unwalkable
-
-
-//			GridGenerator.instance.UpdateWalkableNeighborsNodes(); //update walkable neigbors nodes
 
 			//dispatch event
 			if(onTurretPlaced != null)
@@ -83,8 +79,6 @@ public class Cell: Node {
 		Destroy (turret.gameObject);
 		turret = null;
 		Walkable = true;//it is now walkable
-//		updateThisNodeOnMyWalkableNeighbors(); //it is now walkable
-
 	}
 	public bool isFree(){
 		return turret == null && canBuild();

@@ -79,7 +79,6 @@ public class CrystalCell : Cell {
 
 		//has caught all crystals
 		if(crystalQuantity <= 0){
-			Debug.Log("All crystals have been caught");
 			hasCaught = true;
 
 			if(onCaughtCrystal != null)

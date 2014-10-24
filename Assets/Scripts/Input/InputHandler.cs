@@ -73,8 +73,8 @@ public class InputHandler : MonoBehaviour {
 		if(Input.GetMouseButtonUp(0) && hoverCell != null && UIHandler.instance.turretToPut != null && hoverCell.isFree()){
 			putTurret();
 		}
-		//clear cell
-		if(Input.GetMouseButtonUp(1) && hoverCell != null && UIHandler.instance.turretToPut != null && !hoverCell.isFree()){
+		//clear cell only when game has not started yet
+		if(!GameManager.instance.StartedGame && Input.GetMouseButtonUp(1) && hoverCell != null && UIHandler.instance.turretToPut != null && !hoverCell.isFree()){
 			clearCell();
 		}
 	}

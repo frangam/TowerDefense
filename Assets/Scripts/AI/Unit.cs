@@ -218,6 +218,8 @@ public class Unit : MonoBehaviour {
 
 	public virtual void die(){
 		//free current cell
+		if(previousTarget != null)
+			previousTarget.removeWalkingUnit(this);
 		if(currentTarget != null)
 			currentTarget.removeWalkingUnit(this);
 
@@ -242,6 +244,13 @@ public class Unit : MonoBehaviour {
 	/// Chooses a living target.
 	/// </summary>
 	protected void chooseTarget(){
+		//remove unit
+		if(previousTarget != null)
+			previousTarget.removeWalkingUnit(this);
+		if(currentTarget != null)
+			currentTarget.removeWalkingUnit(this);
+
+		//go back to previous target
 		currentTarget = previousTarget;
 
 		List<Cell> crystalCells = null;
@@ -265,7 +274,7 @@ public class Unit : MonoBehaviour {
 		//----
 		//get the path
 		currentNodeIndex = 0; //restart a new path
-		path = PathFinding.BFS (GridGenerator.instance.Grid, sourceCell, FinalTarget); 
+		path = PathFinding.BFS (GridGenerator.instance.Grid, sourceCell, FinalTarget, GridGenerator.instance.Width, GridGenerator.instance.Height); 
 		noTarget = path.Count == 0;
 		setNextCell (); //get next target cell to go
 		//----

@@ -4,12 +4,11 @@ using System.Collections.Generic;
 
 public class PathFinding {
 	/// http://en.wikipedia.org/wiki/Breadth-first_search#Pseudocode
-	public static List<Node> BFS(Node[,] grid, Node root, Node target, bool onlyWalkableNeighbor = true){
+	public static List<Node> BFS(Node[,] grid, Node root, Node target, int width, int height, bool onlyWalkableNeighbor = true){
 		List<Node> path = new List<Node> ();
 		Queue<Node> queue = new Queue<Node>();
 		HashSet<Node> visitedNodes = new HashSet<Node> ();
-
-		Node[,] prev = new Node[GridGenerator.instance.Width, GridGenerator.instance.Height];
+		Node[,] prev = new Node[width, height];
 
 		queue.Enqueue (root);
 		visitedNodes.Add (root);
@@ -45,13 +44,9 @@ public class PathFinding {
 
 		 do{
 			path.Add( nextTarget );
-
 			nextTarget = nodes[nextTarget.X, nextTarget.Y];
-
-//			target = nodes[ target.X, target.Y ];
 		}
 		while(nextTarget != source);
-//		while(nodes[target.X, target.Y] != source);
 
 		path.Reverse ();
 
@@ -66,6 +61,8 @@ public class PathFinding {
 
 		return path;
 	}
+
+
 	
 
 	public static List<Node> getWalkableNeighbors(Node[,] grid, Node node, int width, int height){

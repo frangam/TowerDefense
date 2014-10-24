@@ -52,7 +52,7 @@ public class UIHandler : MonoBehaviour {
 	}
 
 	void OnGUI(){
-
+		GUI.Label (new Rect (20, 60, 150, 50), "CRYSTALS: " + GameManager.instance.Crystals.ToString ());
 		GUI.Label (new Rect (20, 80, 150, 50), "GOLD: " + GameManager.instance.Gold.ToString ());
 
 		//Spawn Button
@@ -99,8 +99,12 @@ public class UIHandler : MonoBehaviour {
 			finishedGameMessage = "YOU WIN!!!!";
 
 		GUI.enabled = go || win;
-		GUI.Label (new Rect (100, 300, 150, 50), finishedGameMessage);
+		GUI.Label (new Rect (Screen.width/2 - 100, 50, 200, 50), finishedGameMessage);
 		//---
+
+		//instructions
+		GUI.enabled = true;
+		GUI.Label(new Rect (Screen.width/2 - 300, 0, 600, 50), "W,A,S,D: move camera. Right Mouse: rotate camera. Scroll Mouse: Zooming. ESC: Reset view");
 	}
 	#endregion
 
