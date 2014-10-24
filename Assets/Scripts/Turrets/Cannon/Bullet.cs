@@ -47,7 +47,7 @@ public class Bullet : MonoBehaviour {
 
 	void OnTriggerEnter(Collider collider){
 
-		renderer.enabled = false;
+//		renderer.enabled = false;
 
 		if(collider.tag == Settings.ENEMY_TAG){
 			Enemy enemy = collider.GetComponent<Enemy>();
@@ -55,14 +55,14 @@ public class Bullet : MonoBehaviour {
 			//apply damage to the enemy
 			if(enemy != null){
 				enemy.applyDamage(damage);
-
+				Destroy(this.gameObject);
 			}
 		}
 
-		if(collider.tag != Settings.BULLET_TAG){
-			renderer.enabled = false;
-			Destroy(this.gameObject);
-		}
+//		if(collider.tag != Settings.BULLET_TAG){
+//			renderer.enabled = false;
+//			Destroy(this.gameObject);
+//		}
 	}
 
 

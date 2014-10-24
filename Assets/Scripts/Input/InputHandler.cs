@@ -22,7 +22,7 @@ public class InputHandler : MonoBehaviour {
 	//--------------------------------------
 	#region Unity
 	void Update () {
-		if(!UIHandler.instance.Spawning)
+//		if(!UIHandler.instance.Spawning)
 			handlePutTurrets();
 
 	}
@@ -48,7 +48,7 @@ public class InputHandler : MonoBehaviour {
 			if(cellCollider.tag == Settings.CELL_TAG){
 				Cell cell = cellCollider.GetComponent<Cell>();
 
-				if(cell != hoverCell){
+				if(cell != hoverCell && cell.canBuild()){
 					if(hoverCell != null)
 						Materials.changeSharedMaterial(hoverCell.renderer, 1, basicCellMat);
 

@@ -31,6 +31,12 @@ public class GridGenerator : MonoBehaviour {
 	public static GridGenerator		instance; 				//singleton
 
 	//--------------------------------------
+	// Delegates & Events
+	//--------------------------------------
+	public delegate void 	startedWalkableNeighborsNodes();
+	public static event 	startedWalkableNeighborsNodes onStartedWalkableNeighborsNodes;
+
+	//--------------------------------------
 	// Getters & Setters
 	//--------------------------------------
 	public int Width {
@@ -77,7 +83,7 @@ public class GridGenerator : MonoBehaviour {
 		initChecks (); //checks
 		createGrid (); //first, create the grid
 		centerGrid (); //then, center it to the screen view
-		initNeighborsNodes (); //init neighbors cells
+		UpdateWalkableNeighborsNodes (); //init neighbors cells
 		completeBoundCells (); //create more bound cells at neighbors of crystal and enemy cells
 	}
 
@@ -249,12 +255,18 @@ public class GridGenerator : MonoBehaviour {
 	/// <summary>
 	/// inits neighbors nodes
 	/// </summary>
-	public void initNeighborsNodes(){
+	public void UpdateWalkableNeighborsNodes(){
 		//load neighbors
 		foreach(Node node in grid){
-			node.Neighbors = PathFinding.walkableNeighbors(grid, node, width, height);
+			node.Neighbors = PathFinding.getWalkableNeighbors(grid, node, width, height);
 		}
+
+		//dispatch event
+		if(onStartedWalkableNeighborsNodes != null)
+			onStartedWalkableNeighborsNodes();
 	}
+
+
 	/// <summary>
 	/// load bound cells at neighbors of crystal and enemy cells
 	/// </summary>

@@ -1,17 +1,25 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Cell: Node {
 	//--------------------------------------
 	// Setting Attributes
 	//--------------------------------------
 	[SerializeField]
-	private CellType 	type = CellType.NORMAL; //cell type 
+	private CellType 		type = CellType.NORMAL; //cell type 
 
 	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
-	private Turret		turret = null;			//if has a turret
+	private List<Unit>		units;					//if there are units walking through
+	private Turret			turret = null;			//if has a turret
+
+	//--------------------------------------
+	// Delegates & Events
+	//--------------------------------------
+	public delegate void 	turretPlaced(Cell cell);
+	public static event 	turretPlaced onTurretPlaced;
 
 	//--------------------------------------
 	// Getters & Setters
@@ -44,6 +52,8 @@ public class Cell: Node {
 			}
 		}
 	}
+
+
 	
 
 	//--------------------------------------
@@ -57,29 +67,64 @@ public class Cell: Node {
 			turret = Instantiate (_turret, pos, _turret.transform.rotation) as Turret;
 //			turret.transform.parent = this.transform;
 
-			Walkable = false;
+			Walkable = false;//it is now unwalkable
+//			updateThisNodeOnMyWalkableNeighbors(false); //it is now unwalkable
+
+
+//			GridGenerator.instance.UpdateWalkableNeighborsNodes(); //update walkable neigbors nodes
+
+			//dispatch event
+			if(onTurretPlaced != null)
+				onTurretPlaced(this);
 		}
 	}
 	public void clear(){
 		GameManager.instance.Gold += turret.Price; //restore money
 		Destroy (turret.gameObject);
 		turret = null;
-		Walkable = true;
+		Walkable = true;//it is now walkable
+//		updateThisNodeOnMyWalkableNeighbors(); //it is now walkable
+
 	}
 	public bool isFree(){
-		return turret == null;
+		return turret == null && canBuild();
 	}
 
+	public void addWalkingUnit(Unit unit){
+		if(!units.Contains(unit))
+			units.Add (unit);
+	}
+
+	public void removeWalkingUnit(Unit unit){
+		if(units.Contains(unit))
+			units.Remove(unit);
+	}
+
+	/// <summary>
+	/// Can build if there are not any unit are walking through this cell
+	/// </summary>
+	/// <returns><c>true</c>, if build was caned, <c>false</c> otherwise.</returns>
+	public bool canBuild(){
+		return units.Count == 0;
+	}
 
 	//--------------------------------------
 	// Redefined Methods
 	//--------------------------------------
-	public override void init (int _x, int _y, bool _walkable, System.Collections.Generic.List<Node> _neighbors, Node _parent)
+	public override void init (int _x, int _y, bool _walkable, List<Node> _neighbors, Node _parent)
 	{
 		base.init (_x, _y, _walkable, _neighbors, _parent);
 	}
 
-
+	//--------------------------------------
+	// Unity Methods
+	//--------------------------------------
+	#region Unity
+	public override void Awake(){
+		base.Awake ();
+		units = new List<Unit> ();
+	}
+	#endregion
 
 
 }

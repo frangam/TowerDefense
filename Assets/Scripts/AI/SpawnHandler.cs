@@ -17,7 +17,6 @@ public class SpawnHandler : MonoBehaviour {
 	// Private Attributes
 	//--------------------------------------
 	private bool 		finished = false;				//flag checks if it has finished or not all waves
-	private List<Unit>	livingUnits = new List<Unit> ();//living units
 	private int			currentWaveIndex = 0;			//current wave index is being spawed
 
 	//--------------------------------------
@@ -42,7 +41,6 @@ public class SpawnHandler : MonoBehaviour {
 	void Awake(){
 		instance = this;
 		finished = false; //init flag
-		livingUnits = new List<Unit> (); //instantiate
 		currentWaveIndex = 0;
 	}
 
@@ -68,9 +66,10 @@ public class SpawnHandler : MonoBehaviour {
 	//--------------------------------------
 	void onFinishWave (int waveIndex){
 		currentWaveIndex++;
+		finished = currentWaveIndex >= waves.Length;
 
-		if(currentWaveIndex < waves.Length){
-			instance.StartCoroutine(instance.spawn());
+		if(!finished){
+			continueSpawningCurrentWave();
 		}
 	}
 
@@ -83,8 +82,7 @@ public class SpawnHandler : MonoBehaviour {
 	}
 
 	void onDeadUnit (int waveIndex){
-		Debug.Log ("Unit is dead of wave" + waveIndex);
-//		updateLivingUnits ();
+//		Debug.Log ("Unit is dead of wave" + waveIndex);
 	}
 	
 	//--------------------------------------
@@ -109,15 +107,13 @@ public class SpawnHandler : MonoBehaviour {
 		StartCoroutine(wave.getNextSubWave().spawn(wave.Index));
 	}
 
-	private void updateLivingUnits(Unit deadUnit){
-		livingUnits.Remove (deadUnit);
-	}
+
 
 	//--------------------------------------
 	// Public Methods
 	//--------------------------------------
 
 	public int livingUnitsNum(){
-		return livingUnits.Count;
+		return FindObjectsOfType<Enemy> ().Length;
 	}
 }

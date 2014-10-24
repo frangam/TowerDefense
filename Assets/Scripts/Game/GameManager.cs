@@ -50,6 +50,15 @@ public class GameManager : MonoBehaviour {
 		crystals = GridGenerator.instance.InitialCrystalsNum;
 	}
 
+	void OnEnable(){
+		GridGenerator.onStartedWalkableNeighborsNodes += onStartedWalkableNeighborsNodes;
+	}
+	
+	void OnDisable(){
+		GridGenerator.onStartedWalkableNeighborsNodes -= onStartedWalkableNeighborsNodes;
+	}
+
+
 	void Update(){
 		if(startedGame && !finishGame && isGameOver()){
 			finishGame = true;
@@ -70,7 +79,7 @@ public class GameManager : MonoBehaviour {
 	// Public Methods
 	//--------------------------------------
 	public void startGame(){
-		startedGame = true;
+		GridGenerator.instance.UpdateWalkableNeighborsNodes(); //init walkable neigbors nodes
 	}
 
 	/// <summary>
@@ -94,5 +103,11 @@ public class GameManager : MonoBehaviour {
 		crystals--;
 	}
 
-
+	//--------------------------------------
+	// Events
+	//--------------------------------------
+	void onStartedWalkableNeighborsNodes (){
+		if(!startedGame)
+			startedGame = true; //now it is ready to start the game
+	}
 }

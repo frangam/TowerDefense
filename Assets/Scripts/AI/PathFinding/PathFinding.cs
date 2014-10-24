@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class PathFinding {
 	/// http://en.wikipedia.org/wiki/Breadth-first_search#Pseudocode
-	public static List<Node> BFS(Node[,] grid, Node root, Node target){
+	public static List<Node> BFS(Node[,] grid, Node root, Node target, bool onlyWalkableNeighbor = true){
 		List<Node> path = new List<Node> ();
 		Queue<Node> queue = new Queue<Node>();
 		HashSet<Node> visitedNodes = new HashSet<Node> ();
@@ -24,9 +24,9 @@ public class PathFinding {
 				break;
 			}
 			else{
-				//visit neigbors
+				//visit walkable neigbors
 				foreach (Node neighbor in node.Neighbors){
-					if (!visitedNodes.Contains(neighbor)){
+					if ((!onlyWalkableNeighbor || (onlyWalkableNeighbor && neighbor.Walkable)) && !visitedNodes.Contains(neighbor)){
 						queue.Enqueue(neighbor);
 						visitedNodes.Add(neighbor);
 						prev[neighbor.X, neighbor.Y] = node;
@@ -68,7 +68,7 @@ public class PathFinding {
 	}
 	
 
-	public static List<Node> walkableNeighbors(Node[,] grid, Node node, int width, int height){
+	public static List<Node> getWalkableNeighbors(Node[,] grid, Node node, int width, int height){
 		List<Node> adjacents = new List<Node>();
 		
 		//horizontal
@@ -158,7 +158,5 @@ public class PathFinding {
 		
 		return bound;
 	}
-
-
 
 }

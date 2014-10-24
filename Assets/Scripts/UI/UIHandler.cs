@@ -14,6 +14,7 @@ public class UIHandler : MonoBehaviour {
 	public Turret 			turretToPut = null;
 	private bool 			spawning = false;
 	private string 			selectedTurretMessage;
+	private string 			finishedGameMessage;
 
 	//--------------------------------------
 	// Public Attributes
@@ -63,12 +64,14 @@ public class UIHandler : MonoBehaviour {
 		}
 
 		//Cannon Turret
+		GUI.enabled = getTurret (TurretType.CANNON).Price <= GameManager.instance.Gold;
 		if(GUI.Button(new Rect(0,100,150,50), "Cannon Turret ("+getTurret(TurretType.CANNON).Price.ToString()+" g.)")){
 			selectTurretToPut(TurretType.CANNON);
 			selectedTurretMessage = "Cannon Turret selected";
 		}
 
 		//Laser Turret
+		GUI.enabled = getTurret (TurretType.LASER).Price <= GameManager.instance.Gold;
 		if(GUI.Button(new Rect(0,150,150,50), "Laser Turret ("+getTurret(TurretType.LASER).Price.ToString()+" g.)")){
 			selectTurretToPut(TurretType.LASER);
 			selectedTurretMessage = "Laser Turret selected";
@@ -81,6 +84,23 @@ public class UIHandler : MonoBehaviour {
 		if(GUI.Button(new Rect(100,0,100,50), "Restart")){
 			Application.LoadLevel(0);
 		}
+
+
+		//---
+		//Finish Game
+		bool go = GameManager.instance.isGameOver ();
+		bool win = GameManager.instance.win ();
+
+		finishedGameMessage = "";
+
+		if(go)
+			finishedGameMessage = "GAME OVER!!!";
+		else if(win)
+			finishedGameMessage = "YOU WIN!!!!";
+
+		GUI.enabled = go || win;
+		GUI.Label (new Rect (100, 300, 150, 50), finishedGameMessage);
+		//---
 	}
 	#endregion
 

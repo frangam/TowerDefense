@@ -58,10 +58,10 @@ public class Node : MonoBehaviour{
 	//--------------------------------------
 	// Init Methods
 	//--------------------------------------
-	public virtual void init(int _x, int _y, bool _walkable = true, List<Node> _neighbors = null, Node _parent = null){
+	public virtual void init(int _x, int _y, bool _walkable = true, List<Node> _walkableNeighbors = null, Node _parent = null){
 		x = _x;
 		y = _y;
-		neighbors = _neighbors;
+		neighbors = _walkableNeighbors;
 		walkable = _walkable;
 		parent = _parent;
 	}
@@ -70,6 +70,42 @@ public class Node : MonoBehaviour{
 	// Redefined Methods
 	//--------------------------------------
 	public override string ToString (){
-		return string.Format ("[Node: X={0}, Y={1}, Parent={2}, Neighbors={3}, Walkable={4}]", X, Y, Parent, Neighbors, Walkable);
+		return string.Format ("[Node: X={0}, Y={1}, Parent={2}, WalkableNeighbors={3}, Walkable={4}]", X, Y, Parent, Neighbors, Walkable);
 	}
+
+	//--------------------------------------
+	// Unity Methods
+	//--------------------------------------
+	#region Unity
+	public virtual void Awake(){
+		neighbors = new List<Node> ();
+	}
+	#endregion
+
+	//--------------------------------------
+	// Public Methods
+	//--------------------------------------
+//	/// <summary>
+//	/// Updates the this node on my all of my walkable neighbors.
+//	/// </summary>
+//	public void updateThisNodeOnMyWalkableNeighbors(bool _walkable = true){
+//		walkable = _walkable;
+//
+//		foreach(Node n in walkableNeighbors)
+//			updateWalkableNeighbor(this);
+//	}
+
+	//--------------------------------------
+	// Private Methods
+	//--------------------------------------
+//	/// <summary>
+//	/// Updates an specific walkable neighbor.
+//	/// </summary>
+//	/// <param name="node">Node.</param>
+//	private void updateWalkableNeighbor(Node node){
+//		if(node.walkable && !walkableNeighbors.Contains(node))
+//			walkableNeighbors.Add(node);
+//		else if(!node.walkable && walkableNeighbors.Contains(node))
+//			walkableNeighbors.Remove(node);
+//	}
 }

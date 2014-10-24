@@ -63,7 +63,8 @@ public class CrystalCell : Cell {
 	// Unity Methods
 	//--------------------------------------
 	#region Unity
-	void Awake(){
+	public override void Awake(){
+		base.Awake ();
 		hasCaught = false;
 	}
 	#endregion
