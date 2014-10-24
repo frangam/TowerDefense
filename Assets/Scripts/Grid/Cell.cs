@@ -30,7 +30,7 @@ public class Cell: Node {
 
 			Vector3 pos = new Vector3 (transform.position.x, _turret.transform.position.y, transform.position.z); 
 			turret = Instantiate (_turret, pos, _turret.transform.rotation) as Turret;
-			turret.transform.parent = this.transform;
+//			turret.transform.parent = this.transform;
 
 			Walkable = false;
 		}

@@ -55,48 +55,18 @@ public class PathFinding {
 
 		path.Reverse ();
 
-		//----
-		//For TEST
-		string pathSt= "";
-		for( int i = 0; i < path.Count ; i++){
-			pathSt += "->"+ path[ i ] +"\n";
-		}
-		Debug.Log ("path: " + pathSt);
-		//----
+//		//----
+//		//For TEST
+//		string pathSt= "";
+//		for( int i = 0; i < path.Count ; i++){
+//			pathSt += "->"+ path[ i ] +"\n";
+//		}
+//		Debug.Log ("path: " + pathSt);
+//		//----
 
 		return path;
 	}
-
-
-//	public static void emptyAdjacentCells(int i, int j, out List<Cell> adjacents){
-//		adjacents = new List<Cell>();
-//		List<Cell> adjAux = adjacents;
-//
-//		//we check bounds and if the square is not visible yet
-//		if(i>=0 && i<GridGenerator.instance.Width && j>=0 && j<GridGenerator.instance.Height){
-//
-//			Cell cell = GridGenerator.instance.Grid[i,j];
-//			//recursive case
-//			//if it is an empty square 
-//			1{ 
-////				
-//
-//				adjAux.Add(cell);
-//
-//				//horizontal, vertical
-//				emptyAdjacentCells(i, j-1, out adjAux); //below 
-//				emptyAdjacentCells(i, j+1, out adjAux); //above
-//				emptyAdjacentCells(i-1, j, out adjAux); //left
-//				emptyAdjacentCells(i+1, j, out adjAux); //right
-//				
-//				//diagonal 
-//				emptyAdjacentCells(i-1, j-1, out adjAux); //lower left corner
-//				emptyAdjacentCells(i-1, j+1, out adjAux); //upper left corner
-//				emptyAdjacentCells(i+1, j-1, out adjAux); // lower right corner
-//				emptyAdjacentCells(i+1, j+1, out adjAux); //upper right corner
-//			}
-//		}
-//	}
+	
 
 	public static List<Node> walkableNeighbors(Node[,] grid, Node node){
 		List<Node> adjacents = new List<Node>();

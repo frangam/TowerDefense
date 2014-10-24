@@ -7,7 +7,9 @@ public class Turret : MonoBehaviour {
 	// Setting Attributes
 	//--------------------------------------
 	[SerializeField]
-	private int 		damage = 1;
+	private TurretType 	type = TurretType.CANNON;
+	[SerializeField]
+	private float 		damage = 1;
 	[SerializeField]
 	private float		price = 25;
 	[SerializeField]
@@ -23,9 +25,8 @@ public class Turret : MonoBehaviour {
 	// Private Attributes
 	//--------------------------------------
 	private Enemy 		target; 		//enemy to shot
-	public List<Enemy> 	targetsPool;	//pool of enemies
+	private List<Enemy> targetsPool;	//pool of enemies
 	private bool		anyEnemyInRange = false;
-	private TurretType 	type = TurretType.CANNON;
 
 	//--------------------------------------
 	// Getters & Setters
@@ -35,7 +36,7 @@ public class Turret : MonoBehaviour {
 			return this.target;
 		}
 	}
-	public int Damage {
+	public float Damage {
 		get {
 			return this.damage;
 		}
@@ -66,13 +67,12 @@ public class Turret : MonoBehaviour {
 	// Unity Methods
 	//--------------------------------------
 	#region Unity
-	void Awake(){
+	public virtual void Awake(){
 		targetsPool = new List<Enemy> ();
 		anyEnemyInRange = false;
-		type = TurretType.CANNON;
 	}
 
-	void Update(){
+	public virtual void Update(){
 		//change target when current target has died
 		if((target != null && target.isDead()) || target == null){
 			selectTargetFromPoolAndShot();
@@ -176,16 +176,18 @@ public class Turret : MonoBehaviour {
 	}
 
 
-	/// <summary>
-	/// Gets a target to shoot
-	/// </summary>
-	public void selectTarget(Enemy enemy = null){
-		target = enemy;
-	}
+
 
 	//--------------------------------------
 	// Public Methods
 	//--------------------------------------
+	/// <summary>
+	/// Gets a target to shoot
+	/// </summary>
+	public virtual void selectTarget(Enemy enemy = null){
+		target = enemy;
+	}
+
 	/// <summary>
 	/// Shots to the target
 	/// </summary>

@@ -69,7 +69,7 @@ public class UIHandler : MonoBehaviour {
 		}
 
 		//Laser Turret
-		if(GUI.Button(new Rect(0,150,150,50), "Laser Turret ("+getTurret(TurretType.CANNON).Price.ToString()+" g.)")){
+		if(GUI.Button(new Rect(0,150,150,50), "Laser Turret ("+getTurret(TurretType.LASER).Price.ToString()+" g.)")){
 			selectTurretToPut(TurretType.LASER);
 			selectedTurretMessage = "Laser Turret selected";
 		}
