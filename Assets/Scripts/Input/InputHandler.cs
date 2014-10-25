@@ -15,7 +15,7 @@ public class InputHandler : MonoBehaviour {
 	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
-	public Cell 		hoverCell;
+	private Cell 		hoverCell;
 
 	//--------------------------------------
 	// Unity Methods

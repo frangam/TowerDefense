@@ -7,8 +7,6 @@ public class SpawnHandler : MonoBehaviour {
 	// Setting Attributes
 	//--------------------------------------
 	[SerializeField]
-	private Faction 	faction = Faction.ENEMY;		//the faction of this spawner
-	[SerializeField]
 	private float 		initialDelay = 2f; 				//an initial delay to start to spawn units
 	[SerializeField]
 	private Wave[] 		waves;							//all of the waves to spawn
@@ -51,13 +49,11 @@ public class SpawnHandler : MonoBehaviour {
 	void OnEnable(){
 		Wave.onFinishWave += onFinishWave;
 		SubWave.onFinishSubWave += onFinishSubWave;
-		Unit.onDeadUnit += onDeadUnit;
 	}
 	
 	void OnDisable(){
 		Wave.onFinishWave -= onFinishWave;
 		SubWave.onFinishSubWave -= onFinishSubWave;
-		Unit.onDeadUnit -= onDeadUnit;
 	}
 	#endregion
 
@@ -81,10 +77,7 @@ public class SpawnHandler : MonoBehaviour {
 			continueSpawningCurrentWave();
 	}
 
-	void onDeadUnit (int waveIndex){
-//		Debug.Log ("Unit is dead of wave" + waveIndex);
-	}
-	
+
 	//--------------------------------------
 	// Private Methods
 	//--------------------------------------
@@ -103,7 +96,7 @@ public class SpawnHandler : MonoBehaviour {
 
 	private void continueSpawningCurrentWave(){
 		Wave wave = waves[currentWaveIndex];
-		wave.init(currentWaveIndex, faction);
+		wave.init(currentWaveIndex);
 		StartCoroutine(wave.getNextSubWave().spawn(wave.Index));
 	}
 

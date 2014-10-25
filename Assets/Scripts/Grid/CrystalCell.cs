@@ -15,8 +15,7 @@ public class CrystalCell : Cell {
 	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
-	public int 			crystalQuantity = 1;	//number of available crystals in this cell
-	private bool 			hasCaught = false;
+	private int 				crystalQuantity = 1;	//number of available crystals in this cell
 
 	//--------------------------------------
 	// Getters & Setters
@@ -28,7 +27,7 @@ public class CrystalCell : Cell {
 	}
 	public bool HasCaught {
 		get {
-			return this.hasCaught;
+			return crystalQuantity <= 0;
 		}
 	}
 
@@ -41,8 +40,8 @@ public class CrystalCell : Cell {
 	//--------------------------------------
 	// Redefined Methods
 	//--------------------------------------
-	public override void init (int _x, int _y, bool _walkable, System.Collections.Generic.List<Node> _neighbors, Node _parent){
-		base.init (_x, _y, _walkable, _neighbors, _parent);
+	public override void init (int _x, int _y, bool _walkable, System.Collections.Generic.List<Node> _neighbors){
+		base.init (_x, _y, _walkable, _neighbors);
 		base.Type = CellType.CRYSTAL;
 
 		//choose crystal quantity
@@ -65,7 +64,6 @@ public class CrystalCell : Cell {
 	#region Unity
 	public override void Awake(){
 		base.Awake ();
-		hasCaught = false;
 	}
 	#endregion
 
@@ -79,7 +77,6 @@ public class CrystalCell : Cell {
 
 		//has caught all crystals
 		if(crystalQuantity <= 0){
-			hasCaught = true;
 
 			if(onCaughtCrystal != null)
 				onCaughtCrystal(this, enemy);

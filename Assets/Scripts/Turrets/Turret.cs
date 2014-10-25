@@ -26,7 +26,6 @@ public class Turret : MonoBehaviour {
 	//--------------------------------------
 	private Enemy 		target; 		//enemy to shot
 	private List<Enemy> targetsPool;	//pool of enemies
-	private bool		anyEnemyInRange = false;
 
 	//--------------------------------------
 	// Getters & Setters
@@ -69,7 +68,6 @@ public class Turret : MonoBehaviour {
 	#region Unity
 	public virtual void Awake(){
 		targetsPool = new List<Enemy> ();
-		anyEnemyInRange = false;
 	}
 
 	public virtual void Update(){
@@ -100,12 +98,6 @@ public class Turret : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerStay(Collider other) {
-		if(collider != null && collider.tag == Settings.ENEMY_TAG){
-			anyEnemyInRange = true;
-		}
-	}
-
 	void OnTriggerExit(Collider collider){
 		if(collider.tag == Settings.ENEMY_TAG){
 			Enemy enemy = collider.GetComponent<Enemy>();
@@ -121,8 +113,6 @@ public class Turret : MonoBehaviour {
 					selectTargetFromPoolAndShot(); //choose other target from pool if exists
 				}
 			}
-
-			anyEnemyInRange = false;
 		}
 	}
 	#endregion

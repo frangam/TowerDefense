@@ -14,9 +14,7 @@ public class Wave {
 	// Private Attributes
 	//--------------------------------------
 	private bool 			finished = false;					//flag checks if it has finished or not this wave
-	private List<Unit> 		livingUnits = new List<Unit> ();	//living units
-	private int 			index;								//unique id to identify the wave in the collection of waves in the SpawnHandler 
-	private Faction			faction = Faction.ENEMY;			
+	private int 			index;								//unique id to identify the wave in the collection of waves in the SpawnHandler 			
 	private int				currentSubWaveIndex = 0;			//current active subwave index			
 
 	//--------------------------------------
@@ -45,9 +43,8 @@ public class Wave {
 	//--------------------------------------
 	// Public Methods
 	//--------------------------------------
-	public void init(int _index, Faction _faction){
+	public void init(int _index){
 		index = _index;
-		faction = _faction;
 	}
 
 	public bool checkIfFishish(){

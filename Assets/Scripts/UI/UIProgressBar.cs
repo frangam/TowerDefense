@@ -68,8 +68,8 @@ public class UIProgressBar : MonoBehaviour {
 		//screen point to locate in 3D space the progress bar on the top of the livingCharacter
 		Vector3 point = Camera.mainCamera.WorldToScreenPoint(new Vector3(
 			livingCharacter.transform.position.x,
-			livingCharacter.transform.position.y ,
-			livingCharacter.transform.position.z + offset 
+			livingCharacter.transform.position.y + offset ,
+			livingCharacter.transform.position.z 
 			));
 		
 		rcBg.y = Screen.height-point.y;

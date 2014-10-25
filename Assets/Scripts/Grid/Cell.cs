@@ -54,8 +54,6 @@ public class Cell: Node {
 	}
 
 
-	
-
 	//--------------------------------------
 	// Public Methods
 	//--------------------------------------
@@ -95,19 +93,11 @@ public class Cell: Node {
 	}
 
 	/// <summary>
-	/// Can build if there are not any unit are walking through this cell
+	/// Can build if there are not any unit are walking through this cell and it is free
 	/// </summary>
 	/// <returns><c>true</c>, if build was caned, <c>false</c> otherwise.</returns>
 	public bool canBuild(){
 		return units.Count == 0;
-	}
-
-	//--------------------------------------
-	// Redefined Methods
-	//--------------------------------------
-	public override void init (int _x, int _y, bool _walkable, List<Node> _neighbors, Node _parent)
-	{
-		base.init (_x, _y, _walkable, _neighbors, _parent);
 	}
 
 	//--------------------------------------

@@ -11,8 +11,6 @@ public class Unit : MonoBehaviour {
 	[SerializeField]
 	private float 			speed = 2.5f;
 	[SerializeField]
-	private float 			turnSpeed = 20f;
-	[SerializeField]
 	private UIProgressBar 	lifeBar; //life progress bar
 	[SerializeField]
 	private float 			nextNodeDistance = 0.6f;
@@ -24,22 +22,17 @@ public class Unit : MonoBehaviour {
 	//--------------------------------------
 	private int 			waveIndex;
 	private float			life;
-	private Cell 			originSpawnedCell;
-	private Cell 			previousTarget;
-	private Cell 			currentTarget;
-	private Cell 			finalTarget;
-	private List<Node>		path;
+	private Node 			originSpawnedCell;
+	private Node 			previousTarget;
+	private Node 			currentTarget;
+	private Node 			finalTarget;
+	private List<Node>		path;					//movement path
 	private int				currentNodeIndex = 0;
 	private float 			currentNodeDistance;	//current target distance to get
 	private float 			previousNodeDistance;	//previous target distance to clear previous cell
 	private Vector3			targetPos;
 	private bool 			noTarget = false;
-		
-	//--------------------------------------
-	// Delegates & Events
-	//--------------------------------------
-	public delegate void dead(int waveIndex);
-	public static event dead onDeadUnit;
+
 
 	//--------------------------------------
 	// Getters & Setters
@@ -62,25 +55,19 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	public float TurnSpeed {
-		get {
-			return this.turnSpeed;
-		}
-	}
-
 	public int WaveIndex {
 		get {
 			return this.waveIndex;
 		}
 	}
 
-	public Cell OriginSpawnedCell {
+	public Node OriginSpawnedCell {
 		get {
 			return this.originSpawnedCell;
 		}
 	}
 
-	public Cell CurrentTarget {
+	public Node CurrentTarget {
 		get {
 			return this.currentTarget;
 		}
@@ -89,7 +76,7 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	public Cell FinalTarget {
+	public Node FinalTarget {
 		get {
 			return this.finalTarget;
 		}
@@ -140,39 +127,38 @@ public class Unit : MonoBehaviour {
 	/// </summary>
 	private  void move(){
 		if(CurrentTarget != null){
+			//move to target
 			transform.position = Vector3.MoveTowards (transform.position, targetPos, speed * Time.deltaTime);
-			currentNodeDistance = Vector3.Distance(transform.position, currentTarget.transform.position);
 			previousNodeDistance = Vector3.Distance(transform.position, previousTarget.transform.position);
+			currentNodeDistance = Vector3.Distance(transform.position, currentTarget.transform.position);
 
-
-//			Debug.Log("my pos: " + transform.position+ ". tg pos: "+CurrentTarget.transform.position+". dist: " + currentNodeDistance);
-			
-			//enemy is enough closer to the next cell
-
-
-			//unit get out from the previous cell
+			//unit gets out from the previous cell
 			if(previousNodeDistance > prevNodeDistance){
-				previousTarget.removeWalkingUnit(this); //clear previous cell target
+				previousTarget.GetComponent<Cell>().removeWalkingUnit(this); //clear previous cell target
 			}
+			//unit get into the current cell
 			if(currentNodeDistance < prevNodeDistance){
-				currentTarget.addWalkingUnit (this); //this unit is walking through this new cell now
+				currentTarget.GetComponent<Cell>().addWalkingUnit (this); //this unit is walking through this new cell now
 			}
 
-
+			//enemy is enough closer to the next cell
 			//get the next target cell
 			if(currentNodeDistance < nextNodeDistance){
 				previousTarget = currentTarget; //update previous target to current
-				setNextCell();
+				setNextTarget();
 			}
 		}
 	}
-	
-	private void setNextCell(){
+
+	/// <summary>
+	/// Sets the next target.
+	/// </summary>
+	private void setNextTarget(){
 		if(currentNodeIndex < path.Count){
-			Cell cell = path[currentNodeIndex].GetComponent<Cell>();
+			Node nextNode = path[currentNodeIndex];
 			
-			if(cell != null){
-				CurrentTarget = cell;
+			if(nextNode != null){
+				CurrentTarget = nextNode; //update current target
 				targetPos = new Vector3(CurrentTarget.transform.position.x, transform.position.y, CurrentTarget.transform.position.z);
 				currentNodeIndex++;
 			}
@@ -183,25 +169,11 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	private bool cellIsInThePath(Cell cell){
-		bool inPath = false;
-
-		foreach(Node n in path){
-			inPath = n == cell;
-
-			if(inPath)
-				break;
-		}
-
-		return inPath;
-	}
-
-
 	//--------------------------------------
 	// Public Methods
 	//--------------------------------------
-	public virtual void init(Cell cell, int _waveIndex){
-		originSpawnedCell = cell;
+	public virtual void init(Node node, int _waveIndex){
+		originSpawnedCell = node;
 		previousTarget = originSpawnedCell;
 		waveIndex = _waveIndex;
 		chooseTarget ();
@@ -210,21 +182,17 @@ public class Unit : MonoBehaviour {
 	public void applyDamage(float damage){
 		life -= damage;
 
-		//TODO dispatch event if this unit die
 		if(isDead()){
 			die();
 		}
 	}
 
 	public virtual void die(){
-		//free current cell
+		//free previous & current cells
 		if(previousTarget != null)
-			previousTarget.removeWalkingUnit(this);
+			previousTarget.GetComponent<Cell>().removeWalkingUnit(this);
 		if(currentTarget != null)
-			currentTarget.removeWalkingUnit(this);
-
-		if(onDeadUnit != null)
-			onDeadUnit(waveIndex);
+			currentTarget.GetComponent<Cell>().removeWalkingUnit(this);
 		
 		Destroy (gameObject);
 	}
@@ -237,46 +205,32 @@ public class Unit : MonoBehaviour {
 
 	}
 
-	//--------------------------------------
-	// Protected Methods
-	//--------------------------------------
 	/// <summary>
-	/// Chooses a living target.
+	/// Chooses a living target. Final Target (destiny) is set by a child class of Unit
+	/// Each Unit decides what is your preferred final target
 	/// </summary>
-	protected void chooseTarget(){
-		//remove unit
-		if(previousTarget != null)
-			previousTarget.removeWalkingUnit(this);
-		if(currentTarget != null)
-			currentTarget.removeWalkingUnit(this);
+	public virtual void chooseTarget(Node _finalTargetNode = null){
+		//set the final target
+		finalTarget = _finalTargetNode;
 
+		//remove unit from previous and current cells
+		if(previousTarget != null)
+			previousTarget.GetComponent<Cell>().removeWalkingUnit(this);
+		if(currentTarget != null)
+			currentTarget.GetComponent<Cell>().removeWalkingUnit(this);
+		
 		//go back to previous target
 		currentTarget = previousTarget;
 
-		List<Cell> crystalCells = null;
-		int cellIndex = 0;
-		bool keepFinalTarget = finalTarget != null && finalTarget.GetComponent<CrystalCell> () != null && !finalTarget.GetComponent<CrystalCell> ().HasCaught;
-
-		//dont keep the first final crystal cell, get a new crystal cell target if there is
-		if(!keepFinalTarget){
-			crystalCells = GridGenerator.instance.crystalsCells(); //get living crystal cells
-
-			if(crystalCells.Count > 0){
-				cellIndex = Random.Range (0, crystalCells.Count);
-				FinalTarget = crystalCells [cellIndex]; //get the final target cell
-			}
-		}
-
 		//source cell
-		Cell sourceCell = CurrentTarget == null ? OriginSpawnedCell : CurrentTarget;
-
+		Node sourceCell = CurrentTarget == null ? OriginSpawnedCell : CurrentTarget;
 
 		//----
 		//get the path
 		currentNodeIndex = 0; //restart a new path
 		path = PathFinding.BFS (GridGenerator.instance.Grid, sourceCell, FinalTarget, GridGenerator.instance.Width, GridGenerator.instance.Height); 
 		noTarget = path.Count == 0;
-		setNextCell (); //get next target cell to go
+		setNextTarget (); //get next target cell to go
 		//----
 	}
 
@@ -286,7 +240,7 @@ public class Unit : MonoBehaviour {
 	//--------------------------------------
 	void onTurretPlaced (Cell cell){
 		//if the turret was placed in a cell is in the path of this unit, we need to choose a new path and target
-		if(cellIsInThePath(cell))
+		if(path.Contains(cell))
 			chooseTarget();
 	}
 }
