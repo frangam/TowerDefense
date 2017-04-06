@@ -1,4 +1,20 @@
-﻿using UnityEngine;
+﻿/*
+ * Copyright (C) 2014 Francisco Manuel Garcia Moreno
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,9 +22,8 @@ public class Node : MonoBehaviour{
 	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
-	private int 		x;
-	private int			y;
-	private Node 		parent;
+	private int 		x;				//x coord in the grid wolrd
+	private int			y;				//y coord in the grid wolrd
 	private List<Node> 	neighbors;
 	private bool 		walkable = true;
 
@@ -25,15 +40,6 @@ public class Node : MonoBehaviour{
 	public int Y {
 		get {
 			return this.y;
-		}
-	}
-
-	public Node Parent {
-		get {
-			return this.parent;
-		}
-		set {
-			parent = value;
 		}
 	}
 
@@ -58,19 +64,18 @@ public class Node : MonoBehaviour{
 	//--------------------------------------
 	// Init Methods
 	//--------------------------------------
-	public virtual void init(int _x, int _y, bool _walkable = true, List<Node> _walkableNeighbors = null, Node _parent = null){
+	public virtual void init(int _x, int _y, bool _walkable = true, List<Node> _walkableNeighbors = null){
 		x = _x;
 		y = _y;
 		neighbors = _walkableNeighbors;
 		walkable = _walkable;
-		parent = _parent;
 	}
 
 	//--------------------------------------
 	// Redefined Methods
 	//--------------------------------------
 	public override string ToString (){
-		return string.Format ("[Node: X={0}, Y={1}, Parent={2}, WalkableNeighbors={3}, Walkable={4}]", X, Y, Parent, Neighbors, Walkable);
+		return string.Format ("[Node: X={0}, Y={1}, WalkableNeighbors={3}, Walkable={4}]", X, Y, Neighbors, Walkable);
 	}
 
 	//--------------------------------------
@@ -81,31 +86,4 @@ public class Node : MonoBehaviour{
 		neighbors = new List<Node> ();
 	}
 	#endregion
-
-	//--------------------------------------
-	// Public Methods
-	//--------------------------------------
-//	/// <summary>
-//	/// Updates the this node on my all of my walkable neighbors.
-//	/// </summary>
-//	public void updateThisNodeOnMyWalkableNeighbors(bool _walkable = true){
-//		walkable = _walkable;
-//
-//		foreach(Node n in walkableNeighbors)
-//			updateWalkableNeighbor(this);
-//	}
-
-	//--------------------------------------
-	// Private Methods
-	//--------------------------------------
-//	/// <summary>
-//	/// Updates an specific walkable neighbor.
-//	/// </summary>
-//	/// <param name="node">Node.</param>
-//	private void updateWalkableNeighbor(Node node){
-//		if(node.walkable && !walkableNeighbors.Contains(node))
-//			walkableNeighbors.Add(node);
-//		else if(!node.walkable && walkableNeighbors.Contains(node))
-//			walkableNeighbors.Remove(node);
-//	}
 }

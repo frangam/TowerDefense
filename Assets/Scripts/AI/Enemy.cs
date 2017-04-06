@@ -1,32 +1,37 @@
-﻿using UnityEngine;
+﻿/*
+ * Copyright (C) 2014 Francisco Manuel Garcia Moreno
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class Enemy : Unit, System.IComparable<Enemy> {
 	//--------------------------------------
-	// Private Attributes
-	//--------------------------------------
-	private float		range = 0.1f;
-
-
-	//--------------------------------------
 	// Unity Methods
 	//--------------------------------------
 	#region Unity
-	public override void OnEnable ()
-	{
+	public override void OnEnable (){
 		base.OnEnable ();
 		CrystalCell.onCaughtCrystal += onCaughtCrystal;
 	}
 
-	public override void OnDisable ()
-	{
+	public override void OnDisable (){
 		base.OnDisable ();
 		CrystalCell.onCaughtCrystal -= onCaughtCrystal;
 	}
-
-	
-
 	#endregion
 	
 
@@ -41,7 +46,7 @@ public class Enemy : Unit, System.IComparable<Enemy> {
 	// Icomparable implementation
 	//--------------------------------------
 	/// <summary>
-	/// Compares to which enemy is closer to catch its crystal.
+	/// Compares which enemy is closer to catch its crystal.
 	/// 0: if both are the same distance to their crystals
 	/// >0: if this is further away to its crystal than other
 	/// <0: if this is closer to its crystal than other
@@ -56,8 +61,10 @@ public class Enemy : Unit, System.IComparable<Enemy> {
 	//--------------------------------------
 	// Redefined Methods
 	//--------------------------------------
-	public override void doSomethingWhenGetTheGoal ()
-	{
+	/// <summary>
+	/// Dos something when get the goal.
+	/// </summary>
+	public override void doSomethingWhenGetTheGoal (){
 		base.doSomethingWhenGetTheGoal ();
 
 		//when an enemy get the goal catchs a crystal
@@ -70,6 +77,32 @@ public class Enemy : Unit, System.IComparable<Enemy> {
 		}
 	}
 
+	/// <summary>
+	/// Chooses a living target. Final Target (destiny) is set by a child class of Unit
+	/// Each Unit decides what is its preferred final target
+	/// </summary>
+	/// <param name="_finalTargetNode">_final target node.</param>
+	public override void chooseTarget (Node _finalTargetNode){
+		CrystalCell cc = FinalTarget != null ? FinalTarget.GetComponent<CrystalCell> () : null;
+		bool keepFinalTarget = cc != null && !cc.HasCaught;
+		List<Cell> crystalCells = null;
+		int cellIndex = 0;
+		Node finalPreferredTarget = null;
+
+		//dont keep the first final crystal cell, get a new crystal cell target if there is
+		if(!keepFinalTarget){
+			crystalCells = GridGenerator.instance.crystalsCells(); //get living crystal cells
+			
+			if(crystalCells.Count > 0){
+				cellIndex = Random.Range (0, crystalCells.Count);
+				finalPreferredTarget = crystalCells [cellIndex]; //get the final target cell
+			}
+		}
+
+		//Enemies prefer Crystal Cells like final target
+		base.chooseTarget (finalPreferredTarget);
+	}
+
 	//--------------------------------------
 	// Events
 	//--------------------------------------
@@ -79,9 +112,8 @@ public class Enemy : Unit, System.IComparable<Enemy> {
 	/// <param name="crystalCell">Crystal cell.</param>
 	/// <param name="enemy">Enemy.</param>
 	void onCaughtCrystal (Cell crystalCell, Enemy enemy){
-
 		if(!GameManager.instance.isGameOver() && enemy != this && FinalTarget == crystalCell){
-			chooseTarget();
+			chooseTarget(crystalCell);
 		}
 	}
 

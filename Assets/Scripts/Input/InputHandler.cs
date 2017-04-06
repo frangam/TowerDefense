@@ -1,4 +1,20 @@
-﻿using UnityEngine;
+﻿/*
+ * Copyright (C) 2014 Francisco Manuel Garcia Moreno
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using UnityEngine;
 using System.Collections;
 
 public class InputHandler : MonoBehaviour {
@@ -15,7 +31,7 @@ public class InputHandler : MonoBehaviour {
 	//--------------------------------------
 	// Private Attributes
 	//--------------------------------------
-	public Cell 		hoverCell;
+	private Cell 		hoverCell;
 
 	//--------------------------------------
 	// Unity Methods
@@ -34,7 +50,7 @@ public class InputHandler : MonoBehaviour {
 	//--------------------------------------
 	private void handlePutTurrets(){
 		RaycastHit hit;
-		Ray ray = Camera.mainCamera.ScreenPointToRay(Input.mousePosition);
+		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		float x,y,z;
 		x=y=z=0f;
 		
@@ -50,12 +66,12 @@ public class InputHandler : MonoBehaviour {
 
 				if(cell != hoverCell && cell.canBuild()){
 					if(hoverCell != null)
-						Materials.changeSharedMaterial(hoverCell.renderer, 1, basicCellMat);
+						Materials.changeSharedMaterial(hoverCell.GetComponent<Renderer>(), 1, basicCellMat);
 
 					hoverCell = cell;
 
 					//highlight cell when hover it
-					Materials.changeSharedMaterial(hoverCell.renderer, 1, selectedCellMat);
+					Materials.changeSharedMaterial(hoverCell.GetComponent<Renderer>(), 1, selectedCellMat);
 				}
 
 
@@ -63,7 +79,7 @@ public class InputHandler : MonoBehaviour {
 		}
 		else{
 			if(hoverCell != null)
-				Materials.changeSharedMaterial(hoverCell.renderer, 1, basicCellMat);
+				Materials.changeSharedMaterial(hoverCell.GetComponent<Renderer>(), 1, basicCellMat);
 
 			hoverCell = null;
 		}
