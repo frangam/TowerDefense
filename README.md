@@ -1,5 +1,6 @@
 # TowerDefense (Unity StarterKit)
-<img src="https://img.shields.io/github/license/frangam/towerdefense.svg"> <img src="https://img.shields.io/github/release/frangam/towerdefense.svg"/> <img src="https://img.shields.io/github/downloads/frangam/towerdefense/total.svg"/>
+<img src="https://img.shields.io/github/license/frangam/towerdefense.svg"> [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7741254.svg)](https://doi.org/10.5281/zenodo.7741254)
+ <img src="https://img.shields.io/github/release/frangam/towerdefense.svg"/> <img src="https://img.shields.io/github/downloads/frangam/towerdefense/total.svg"/>
 
 A scalable Tower Defense game framework made with [Unity3D] in C# with a basic AI avoids turrets.
 That is like a starter kit for creating your own Tower Defense game.
