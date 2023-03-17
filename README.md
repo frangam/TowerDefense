@@ -1,11 +1,16 @@
 # TowerDefense (Unity StarterKit)
 <img src="https://img.shields.io/github/license/frangam/towerdefense.svg"> [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7741254.svg)](https://doi.org/10.5281/zenodo.7741254)
- <img src="https://img.shields.io/github/release/frangam/towerdefense.svg"/> <img src="https://img.shields.io/github/downloads/frangam/towerdefense/total.svg"/>
+ <img src="https://img.shields.io/github/release/frangam/towerdefense.svg"/> [![GitHub all releases](https://img.shields.io/github/downloads/frangam/towerdefense/total)](https://github.com/frangam/TowerDefense/releases/download/1.0/TowerDefenseTest_Web.zip)
 
 A scalable Tower Defense game framework made with [Unity3D] in C# with a basic AI avoids turrets.
 That is like a starter kit for creating your own Tower Defense game.
 
 All the code is commented to understand how it works and is well structured in order to be readable.
+
+## Download last release
+Support us downloading our last release
+- Click on [TowerDefense](https://github.com/frangam/TowerDefense/releases/download/1.0/TowerDefenseTest_Web.zip) or on Downloads counter [![GitHub all releases](https://img.shields.io/github/downloads/frangam/towerdefense/total)](https://github.com/frangam/TowerDefense/releases/download/1.0/TowerDefenseTest_Web.zip)
+- Also, you could support us on ZENODO site: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7741254.svg)](https://doi.org/10.5281/zenodo.7741254)
 
 # Game Scene
 The Game scene is called "Demo" and it is localed in “Scenes” folder.
